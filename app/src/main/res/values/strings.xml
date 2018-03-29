@@ -1,4 +1,9 @@
 <resources>
-    <string name="app_name">AssigmentMyPlace</string>
+    <string name="app_name">MyPlace</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="title_location">Select Location</string>
+    <string name="nearby_tab">Nearby</string>
+    <string name="favorite_tab">Favorite</string>
+
 </resources>
