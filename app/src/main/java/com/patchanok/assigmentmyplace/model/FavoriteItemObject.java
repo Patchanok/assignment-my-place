@@ -12,16 +12,19 @@ public class FavoriteItemObject {
     private double favLat;
     private double favLng;
     private boolean isFavorite;
+    private String vicinity;
 
     public FavoriteItemObject(){}
 
-    public FavoriteItemObject(String favId, String favName, String favUrl, double favLat, double favLng, boolean isFavorite) {
+    public FavoriteItemObject(String favId, String favName, String favUrl, double favLat,
+                              double favLng, boolean isFavorite, String vicinity) {
         this.favId = favId;
         this.favName = favName;
         this.favUrl = favUrl;
         this.favLat = favLat;
         this.favLng = favLng;
         this.isFavorite = isFavorite;
+        this.vicinity = vicinity;
     }
 
     public String getFavId() {
@@ -46,5 +49,9 @@ public class FavoriteItemObject {
 
     public boolean isFavorite() {
         return isFavorite;
+    }
+
+    public String getVicinity() {
+        return vicinity;
     }
 }

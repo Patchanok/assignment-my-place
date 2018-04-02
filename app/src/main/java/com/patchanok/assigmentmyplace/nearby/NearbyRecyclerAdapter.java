@@ -106,7 +106,7 @@ public class NearbyRecyclerAdapter extends RecyclerView.Adapter<NearbyRecyclerAd
         }
 
         public void bindFavoriteData(FavoriteItemObject favoriteItemObject) {
-            likeButton.setVisibility(View.GONE);
+            likeButton.setVisibility(View.INVISIBLE);
             itemBinding.setViewtype(TYPE_FAV);
             itemBinding.setFavObject(favoriteItemObject);
             itemBinding.executePendingBindings();

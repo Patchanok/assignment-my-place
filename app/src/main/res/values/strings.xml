@@ -6,4 +6,8 @@
     <string name="nearby_tab">Nearby</string>
     <string name="favorite_tab">Favorite</string>
 
+    <string name="nodata_nearby_title">No nearby place</string>
+    <string name="nodata_favorite_title">No favorite place</string>
+    <string name="seelocation_title">See location</string>
+
 </resources>

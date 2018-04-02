@@ -52,7 +52,6 @@ public class MapsActivity extends BaseActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-//        TODO: move viewModel to instance
         nearbyViewmodel = ViewModelProviders.of(this).get(NearbyViewmodel.class);
         binding.setIsEnableSnippet(false);
         binding.setView(MapsActivity.this);
@@ -63,6 +62,8 @@ public class MapsActivity extends BaseActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnCameraIdleListener(this);
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
         initLocationService();
     }
 
@@ -86,35 +87,24 @@ public class MapsActivity extends BaseActivity implements
                 this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 40.0f));
-                                mMap.setMinZoomPreference(6.0f);
-                                mMap.setMaxZoomPreference(14.0f);
-                            }
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 40.0f));
+                            mMap.setMinZoomPreference(6.0f);
+                            mMap.setMaxZoomPreference(14.0f);
                         }
                     });
         }
     }
 
     public View.OnClickListener onClickSnippetMarker() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nearbyViewmodel.checkAuthFirebase(latLng.latitude, latLng.longitude,
-                        "cafe", getResources().getString(R.string.google_place_key))
-                        .observe(MapsActivity.this, new Observer<AllPlaceDataObject>() {
-                            @Override
-                            public void onChanged(@Nullable AllPlaceDataObject allPlaceDataObject) {
-                                EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
-                                finish();
-                            }
-                        });
-            }
-        };
+        return v -> nearbyViewmodel.checkAuthFirebase(latLng.latitude, latLng.longitude,
+                "cafe", getResources().getString(R.string.google_place_key))
+                .observe(MapsActivity.this, allPlaceDataObject -> {
+                    EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
+                    finish();
+                });
     }
 
 }

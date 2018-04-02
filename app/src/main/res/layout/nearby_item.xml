@@ -20,12 +20,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="@dimen/dp10">
 
         <ImageView
             android:id="@+id/icon_image"
-            android:layout_width="0dp"
-            android:layout_height="75dp"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="@dimen/dp75"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -37,26 +37,30 @@
             android:layout_gravity="center"
             android:layout_weight="3"
             android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingLeft="@dimen/dp10"
+            android:paddingRight="@dimen/dp10">
 
             <TextView
                 android:id="@+id/place_name_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorGray700"
                 bind:text="@{ viewtype.equals(`nearby`) ? object.name : favObject.favName }"/>
 
             <TextView
                 android:id="@+id/place_url_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                />
+                android:layout_marginTop="@dimen/dp5"
+                bind:text="@{ viewtype.equals(`nearby`) ? object.vicinity : favObject.vicinity }"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
         </LinearLayout>
 
         <com.like.LikeButton
             android:id="@+id/favorite_button"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp0"
             android:layout_height="match_parent"
             android:layout_weight="1"
             app:icon_type="Star"
@@ -64,7 +68,7 @@
             app:dots_primary_color="@color/colorAccent"
             app:dots_secondary_color="@color/colorPrimary"
             app:circle_end_color="@color/colorAccent"
-            app:icon_size="25dp"
+            app:icon_size="@dimen/dp25"
             app:anim_scale_factor="2">
 
         </com.like.LikeButton>

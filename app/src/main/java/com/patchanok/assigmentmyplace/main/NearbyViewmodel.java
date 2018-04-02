@@ -32,6 +32,7 @@ import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLAT;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLNG;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVNAME;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVURL;
+import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVVICI;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_IS_FAV;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_USER_UID;
 import static com.patchanok.assigmentmyplace.service.HttpClient.BASE_URL;
@@ -115,7 +116,8 @@ public class NearbyViewmodel extends ViewModel {
                                         result.get(MAP_FAVID).toString(), result.get(MAP_FAVNAME).toString(),
                                         result.get(MAP_FAVURL).toString(),
                                         Double.valueOf(result.get(MAP_FAVLAT).toString()),
-                                        Double.valueOf(result.get(MAP_FAVLNG).toString()), isFav
+                                        Double.valueOf(result.get(MAP_FAVLNG).toString()),
+                                        isFav, result.get(MAP_FAVVICI).toString()
                                 );
                             }
                             favoriteItemObjectList.add(favoriteItem);
@@ -176,6 +178,7 @@ public class NearbyViewmodel extends ViewModel {
     private List<NearbyItemObject> getNearbyItem(PlaceObject placeObject, List<Map<String, String>> favorites) {
         String name;
         String url = "";
+        String vicinity;
         boolean isFavorite = false;
         double lat;
         double lng;
@@ -187,7 +190,7 @@ public class NearbyViewmodel extends ViewModel {
             name = checkIsEmpty(placeDetailObject.getName());
             lat = Double.valueOf(checkIsEmpty(String.valueOf(placeDetailObject.getGeometry().getLocationObject().getLat())));
             lng = Double.valueOf(checkIsEmpty(String.valueOf(placeDetailObject.getGeometry().getLocationObject().getLng())));
-
+            vicinity = placeDetailObject.getVicinity();
             if (placeDetailObject.getPhotoObjectList() != null) {
                 photoObjectList = placeDetailObject.getPhotoObjectList();
                 for (PhotoObject photoObject : photoObjectList) {
@@ -203,7 +206,7 @@ public class NearbyViewmodel extends ViewModel {
                 }
             }
 
-            NearbyItemObject nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(), name, url, lat, lng, isFavorite);
+            NearbyItemObject nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(), name, url, lat, lng, isFavorite, vicinity);
             nearbyItemObjectList.add(nearbyItemObject);
         }
         return nearbyItemObjectList;

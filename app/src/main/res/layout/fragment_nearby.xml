@@ -4,14 +4,15 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
+
         <variable
             name="isEnable"
-            type="Boolean"/>
+            type="Boolean" />
 
         <variable
             name="view"
-            type="com.patchanok.assigmentmyplace.nearby.NearbyFragment"/>
+            type="com.patchanok.assigmentmyplace.nearby.NearbyFragment" />
     </data>
 
     <RelativeLayout
@@ -23,16 +24,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="20dp"
-            android:text="No nearby place"
+            android:padding="@dimen/dp20"
+            android:text="@string/nodata_nearby_title"
             bind:visibility="@{ isEnable? View.GONE : View.VISIBLE }" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/nearby_recyclerview"
+            style="@style/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -40,9 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_pin_map"
-            android:onClick="@{ view.openMap() }"/>
+            android:layout_margin="@dimen/dp20"
+            android:onClick="@{ view.openMap() }"
+            android:src="@drawable/ic_pin_map" />
 
     </RelativeLayout>
 </layout>

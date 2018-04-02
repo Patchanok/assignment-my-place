@@ -23,6 +23,7 @@ import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLAT;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLNG;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVNAME;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVURL;
+import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVVICI;
 import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_IS_FAV;
 
 /**
@@ -43,7 +44,7 @@ public class FavoriteViewmodel extends ViewModel {
         firebaseService = new FirebaseService();
         favoriteItemObject = new FavoriteItemObject(nearbyItemObject.getId(),
                 nearbyItemObject.getName(), nearbyItemObject.getUrl(),
-                nearbyItemObject.getLat(), nearbyItemObject.getLng(), isFavorite);
+                nearbyItemObject.getLat(), nearbyItemObject.getLng(), isFavorite, nearbyItemObject.getVicinity());
 
         firebaseService.createFavoriteItem(favoriteItemObject)
                 .map(stringBooleanMap -> {
@@ -95,7 +96,8 @@ public class FavoriteViewmodel extends ViewModel {
                                 result.get(MAP_FAVID).toString(), result.get(MAP_FAVNAME).toString(),
                                 result.get(MAP_FAVURL).toString(),
                                 Double.valueOf(result.get(MAP_FAVLAT).toString()),
-                                Double.valueOf(result.get(MAP_FAVLNG).toString()), isFav);
+                                Double.valueOf(result.get(MAP_FAVLNG).toString()),
+                                isFav, result.get(MAP_FAVVICI).toString());
                     }
                 }
                 favoriteItemObjectList.add(favoriteItem);

@@ -14,14 +14,17 @@ public class NearbyItemObject {
     private double lat;
     private double lng;
     private boolean isFavorite;
+    private String vicinity;
 
-    public NearbyItemObject(String id, String name, String url, double lat, double lng, boolean isFavorite) {
+    public NearbyItemObject(String id, String name, String url, double lat,
+                            double lng, boolean isFavorite, String vicinity) {
         this.id = id;
         this.name = name;
         this.url = url;
         this.lat = lat;
         this.lng = lng;
         this.isFavorite = isFavorite;
+        this.vicinity = vicinity;
     }
 
     public String getId() {
@@ -48,4 +51,7 @@ public class NearbyItemObject {
         return isFavorite;
     }
 
+    public String getVicinity() {
+        return vicinity;
+    }
 }

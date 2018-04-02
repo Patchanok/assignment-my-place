@@ -34,6 +34,8 @@ public class FirebaseService {
     public static final String MAP_FAVLNG = "favLng";
     public static final String MAP_FAVURL = "favUrl";
     public static final String MAP_IS_FAV = "favorite";
+    public static final String MAP_FAVVICI = "vicinity";
+
 
     public DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     private RxFirebaseAuth authenticate = new RxFirebaseAuth();
@@ -64,6 +66,7 @@ public class FirebaseService {
                             mapResult.put(MAP_FAVLNG, value.get(MAP_FAVLNG));
                             mapResult.put(MAP_FAVURL, value.get(MAP_FAVURL));
                             mapResult.put(MAP_IS_FAV, value.get(MAP_IS_FAV));
+                            mapResult.put(MAP_FAVVICI, value.get(MAP_FAVVICI));
                             mapList.add(mapResult);
                         }
                     }
