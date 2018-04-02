@@ -9,9 +9,8 @@
     </style>
 
     <style name="MaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="titleTextStyle">@style/ActionBarTitleText</item>
-        <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
-
+        <!--<item name="titleTextStyle">@style/ActionBarTitleText</item>-->
+        <!--<item name="android:titleTextStyle">@style/ActionBarTitleText</item>-->
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -27,8 +26,8 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
 
-    <style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/colorGray500</item>
-    </style>
+    <!--<style name="ActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">-->
+        <!--<item name="android:textColor">@color/colorGray500</item>-->
+    <!--</style>-->
 
 </resources>

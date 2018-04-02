@@ -24,7 +24,7 @@ public class PlaceDetailObject {
      * types : ["point_of_interest","establishment"]
      * vicinity : ซอย 54, 186 พระราม 2 ซอย 69, แขวง แสมดำ, เขต บางขุนเทียน
      */
-
+    @SerializedName("geometry")
     private GeometryObject geometryObject;
     private String icon;
     private String id;
@@ -41,100 +41,70 @@ public class PlaceDetailObject {
     private List<PhotoObject> photoObjectList;
     private List<String> types;
 
-    public GeometryObject getGeometry() {
-        return geometryObject;
+    public PlaceDetailObject(GeometryObject geometryObject, String icon, String id, String name,
+                             OpeningHoursObject openingHoursObject, String placeId, double rating,
+                             String reference, String scope, String vicinity,
+                             List<PhotoObject> photoObjectList, List<String> types) {
+        this.geometryObject = geometryObject;
+        this.icon = icon;
+        this.id = id;
+        this.name = name;
+        this.openingHoursObject = openingHoursObject;
+        this.placeId = placeId;
+        this.rating = rating;
+        this.reference = reference;
+        this.scope = scope;
+        this.vicinity = vicinity;
+        this.photoObjectList = photoObjectList;
+        this.types = types;
     }
 
-    public void setGeometry(GeometryObject geometryObject) {
-        this.geometryObject = geometryObject;
+    public GeometryObject getGeometry() {
+        return geometryObject;
     }
 
     public String getIcon() {
         return icon;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public OpeningHoursObject getOpeningHoursObject() {
         return openingHoursObject;
-    }
-
-    public void setOpeningHoursObject(OpeningHoursObject openingHoursObject) {
-        this.openingHoursObject = openingHoursObject;
     }
 
     public String getPlaceId() {
         return placeId;
     }
 
-    public void setPlace_id(String placeId) {
-        this.placeId = placeId;
-    }
-
     public double getRating() {
         return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
     }
 
     public String getReference() {
         return reference;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
     public String getScope() {
         return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
     }
 
     public String getVicinity() {
         return vicinity;
     }
 
-    public void setVicinity(String vicinity) {
-        this.vicinity = vicinity;
-    }
-
     public List<PhotoObject> getPhotoObjectList() {
         return photoObjectList;
     }
 
-    public void setPhotoObjectList(List<PhotoObject> photoObjectList) {
-        this.photoObjectList = photoObjectList;
-    }
-
     public List<String> getTypes() {
         return types;
-    }
-
-    public void setTypes(List<String> types) {
-        this.types = types;
     }
 
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="java.lang.String"/>
+        <variable
+            name="viewtype"
+            type="java.lang.String "/>
+        <variable
+            name="object"
+            type="com.patchanok.assigmentmyplace.model.NearbyItemObject"/>
+
+        <variable
+            name="favObject"
+            type="com.patchanok.assigmentmyplace.model.FavoriteItemObject"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            bind:imagePath="@{ viewtype.equals(`nearby`) ? object.url : favObject.favUrl }"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/place_name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                bind:text="@{ viewtype.equals(`nearby`) ? object.name : favObject.favName }"/>
+
+            <TextView
+                android:id="@+id/place_url_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                />
+        </LinearLayout>
+
+        <com.like.LikeButton
+            android:id="@+id/favorite_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:icon_type="Star"
+            app:circle_start_color="@color/colorPrimary"
+            app:dots_primary_color="@color/colorAccent"
+            app:dots_secondary_color="@color/colorPrimary"
+            app:circle_end_color="@color/colorAccent"
+            app:icon_size="25dp"
+            app:anim_scale_factor="2">
+
+        </com.like.LikeButton>
+
+    </LinearLayout>
+
+</layout>

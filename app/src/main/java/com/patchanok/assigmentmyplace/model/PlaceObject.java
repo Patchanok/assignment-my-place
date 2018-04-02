@@ -1,5 +1,6 @@
 package com.patchanok.assigmentmyplace.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class PlaceObject {
     private List<?> htmlAttributions;
     @SerializedName("results")
     private List<PlaceDetailObject> placeDetailObjectList;
+
+    @Expose
+    private List<NearbyItemObject> nearbyItemObjectList;
 
     public String getNextPageToken() {
         return nextPageToken;
@@ -48,5 +52,13 @@ public class PlaceObject {
 
     public void setPlaceDetailObject(List<PlaceDetailObject> placeDetailObjectList) {
         this.placeDetailObjectList = placeDetailObjectList;
+    }
+
+    public List<NearbyItemObject> getNearbyItemObjectList() {
+        return nearbyItemObjectList;
+    }
+
+    public void setNearbyItemObjectList(List<NearbyItemObject> nearbyItemObjectList) {
+        this.nearbyItemObjectList = nearbyItemObjectList;
     }
 }

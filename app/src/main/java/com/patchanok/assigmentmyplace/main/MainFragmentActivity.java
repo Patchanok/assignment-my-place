@@ -4,26 +4,30 @@ import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.patchanok.assigmentmyplace.FavoritePlaceEvent;
+import com.patchanok.assigmentmyplace.NearbyEvent;
 import com.patchanok.assigmentmyplace.R;
 import com.patchanok.assigmentmyplace.base.BaseActivity;
 import com.patchanok.assigmentmyplace.favorite.FavoriteFragment;
-import com.patchanok.assigmentmyplace.model.PlaceObject;
+import com.patchanok.assigmentmyplace.favorite.FavoriteViewmodel;
+import com.patchanok.assigmentmyplace.model.FavoriteItemObject;
 import com.patchanok.assigmentmyplace.nearby.NearbyFragment;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by patchanok on 3/28/2018 AD.
@@ -38,6 +42,7 @@ public class MainFragmentActivity extends BaseActivity {
     private ViewPager viewPager;
 
     private NearbyViewmodel nearbyViewmodel;
+    private FavoriteViewmodel favoriteViewmodel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,26 +51,8 @@ public class MainFragmentActivity extends BaseActivity {
         initialView();
         initLocationService();
         nearbyViewmodel = ViewModelProviders.of(this).get(NearbyViewmodel.class);
-
-    }
-
-    private void initLocationService() {
-        if (ContextCompat.checkSelfPermission(MainFragmentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                getNearbyPlace(location.getLatitude(),location.getLongitude());
-                            }
-                        }
-                    });
-        } else {
-            requestPermissions();
-        }
+        favoriteViewmodel = ViewModelProviders.of(this).get(FavoriteViewmodel.class);
+        getFavorite();
     }
 
     private void initialView() {
@@ -81,17 +68,41 @@ public class MainFragmentActivity extends BaseActivity {
     private void setupViewpager(ViewPager viewPager) {
         MainFragmentAdapter adapter = new MainFragmentAdapter(getSupportFragmentManager());
         adapter.addFragment(NearbyFragment.newInstance(), getResources().getString(R.string.nearby_tab));
-        adapter.addFragment(new FavoriteFragment(), getResources().getString(R.string.favorite_tab));
+        adapter.addFragment(FavoriteFragment.newInstance(), getResources().getString(R.string.favorite_tab));
         viewPager.setAdapter(adapter);
+    }
 
+    private void initLocationService() {
+
+        if (ContextCompat.checkSelfPermission(MainFragmentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            getNearbyPlace(location.getLatitude(), location.getLongitude());
+                        }
+                    });
+        } else {
+            requestPermissions();
+        }
     }
 
     private void getNearbyPlace(double lat, double lng) {
-        nearbyViewmodel.getNearbyPlace(lat, lng, "food", getResources().getString(R.string.google_place_key))
-                .observe(this, new Observer<PlaceObject>() {
+        nearbyViewmodel.checkAuthFirebase(lat, lng, "cafe", getResources().getString(R.string.google_place_key))
+                .observe(this, allPlaceDataObject -> {
+                    EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
+//                    EventBus.getDefault().postSticky(new FavoritePlaceEvent(allPlaceDataObject.getFavoriteItemObjectList()));
+                });
+    }
+
+    private void getFavorite(){
+        favoriteViewmodel.getFavoritePlace().observe(this, new Observer<List<FavoriteItemObject>>() {
             @Override
-            public void onChanged(@Nullable PlaceObject placeObject) {
-                Log.i("getNearbyPlace()","placeObject : "+placeObject.getPlaceDetailObject().get(0).getId());
+            public void onChanged(@Nullable List<FavoriteItemObject> favoriteItemObjects) {
+                EventBus.getDefault().postSticky(new FavoritePlaceEvent(favoriteItemObjects));
+
             }
         });
     }

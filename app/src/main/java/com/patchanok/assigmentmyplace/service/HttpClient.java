@@ -13,7 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpClient {
 
-    private final String BASE_URL = "https://maps.googleapis.com/maps/api/place/";
+    public static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/";
+//    https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=CmRaAAAAufg_St7D6EM--PxpDm1mEK7tRmESnwQpBW6NjJxi4jq3HxZaFm1HS1-26maqkS_JQ2AjyN_ac6iTff8TtE5xM1F4N3RDT52-Q3B7d1ksKndNj3z9d6niedapzRfUcFajEhBiJIPNT11vrHX8_OAXyHaRGhTHJIRfafZAKrFz7la4pZHSpwWuvw&key=AIzaSyC4r5i4Qlifrb8FMR4qhW5xrfU_XsXCLKs
+
     private static HttpClient instance;
 
     public static HttpClient getInstance() {

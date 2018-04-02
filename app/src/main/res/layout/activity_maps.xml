@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="isEnableSnippet"
+            type="Boolean"/>
+        <variable
+            name="view"
+            type="com.patchanok.assigmentmyplace.map.MapsActivity"/>
+    </data>
+
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.patchanok.assigmentmyplace.map.MapsActivity">
@@ -45,6 +57,27 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/snippet_marker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginBottom="70dp"
+        bind:visibility="@{ isEnableSnippet ? View.VISIBLE : View.GONE }"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="See locationn"
+            android:layout_margin="5dp"
+            android:background="@drawable/snippet_marker"
+            android:textColor="@color/colorPrimary"
+            android:onClick="@{ view.onClickSnippetMarker() }"
+            />
+    </RelativeLayout>
+
 
 </RelativeLayout>
+</layout>
 

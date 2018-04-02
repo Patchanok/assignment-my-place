@@ -27,7 +27,11 @@
 
         <activity
             android:name=".map.MapsActivity"
-            android:label="@string/title_location">
+            android:label="@string/title_location"
+            android:parentActivityName=".main.MainFragmentActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainFragmentActivity" />
         </activity>
     </application>
 

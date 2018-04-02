@@ -14,6 +14,6 @@ public interface ApiService {
     @GET("nearbysearch/json?")
     Call<PlaceObject> getNearbyPlace(@Query("location") String latlng,
                                      @Query("radius") double radius,
-                                     @Query("types") String types,
+                                     @Query("type") String types,
                                      @Query("key") String key);
 }

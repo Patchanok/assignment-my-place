@@ -19,8 +19,6 @@ public class BaseActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     public static final int PERMISSIONS_REQUEST_CODE = 99;
-    private GoogleApiClient mGoogleApiClient;
-
     private Toolbar toolbar;
 
     public BaseActivity() {
@@ -38,14 +36,6 @@ public class BaseActivity extends AppCompatActivity implements
         super.onPause();
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
 
     @Override
     public void onConnected(Bundle bundle) {

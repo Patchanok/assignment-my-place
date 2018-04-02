@@ -1,7 +1,10 @@
 package com.patchanok.assigmentmyplace.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,35 +27,41 @@ public class PhotoObject {
     @SerializedName("html_attributions")
     private List<String> htmlAttributions;
 
-    public int getHeight() {
-        return height;
+    public PhotoObject(int height, String photoReference, int width, List<String> htmlAttributions) {
+        this.height = height;
+        this.photoReference = photoReference;
+        this.width = width;
+        this.htmlAttributions = htmlAttributions;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
+    public int getHeight() {
+        return height;
     }
 
     public String getPhotoReference() {
         return photoReference;
     }
 
-    public void setPhotoReference(String photoReference) {
-        this.photoReference = photoReference;
-    }
-
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public List<String> getHtmlAttributions() {
-        return htmlAttributions;
+        return urlImage();
     }
 
-    public void setHtmlAttributions(List<String> htmlAttributions) {
-        this.htmlAttributions = htmlAttributions;
+    private List<String> urlImage() {
+        List<String> url = new ArrayList<>();
+//        if (htmlAttributions.size() > 0) {
+//            for (String urlDefault : htmlAttributions) {
+//                Log.w("","urlDefault : "+urlDefault);
+//
+//                String[] parts = urlDefault.split(" \" ");
+//                Log.w("","parts : "+parts[0]);
+//                Log.w("","parts : "+parts[1]);
+//                url.add(parts[1]);
+//            }
+//        }
+        return url;
     }
 }

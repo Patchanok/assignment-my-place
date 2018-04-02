@@ -18,19 +18,17 @@ public class GeometryObject {
     @SerializedName("viewport")
     private ViewportObject viewportObject;
 
-    public LocationObject getLocationObject() {
-        return locationObject;
+    public GeometryObject(LocationObject locationObject, ViewportObject viewportObject) {
+        this.locationObject = locationObject;
+        this.viewportObject = viewportObject;
     }
 
-    public void setLocationObject(LocationObject locationObject) {
-        this.locationObject = locationObject;
+    public LocationObject getLocationObject() {
+        return locationObject;
     }
 
     public ViewportObject getViewportObject() {
         return viewportObject;
     }
 
-    public void setViewportObject(ViewportObject viewportObject) {
-        this.viewportObject = viewportObject;
-    }
 }

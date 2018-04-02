@@ -20,19 +20,17 @@ public class OpeningHoursObject {
     @SerializedName("weekday_text")
     private List<?> weekdayText;
 
-    public boolean isOpenNow() {
-        return openNow;
+    public OpeningHoursObject(boolean openNow, List<?> weekdayText) {
+        this.openNow = openNow;
+        this.weekdayText = weekdayText;
     }
 
-    public void setOpenNow(boolean openNow) {
-        this.openNow = openNow;
+    public boolean isOpenNow() {
+        return openNow;
     }
 
     public List<?> getWeekdayText() {
         return weekdayText;
     }
 
-    public void setWeekdayText(List<?> weekdayText) {
-        this.weekdayText = weekdayText;
-    }
 }
