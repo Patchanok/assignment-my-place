@@ -1,10 +1,12 @@
 package com.patchanok.assigmentmyplace.main;
 
 import android.Manifest;
-import android.arch.lifecycle.Observer;
+import android.app.PendingIntent;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -15,25 +17,37 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.patchanok.assigmentmyplace.FavoritePlaceEvent;
 import com.patchanok.assigmentmyplace.NearbyEvent;
 import com.patchanok.assigmentmyplace.R;
 import com.patchanok.assigmentmyplace.base.BaseActivity;
 import com.patchanok.assigmentmyplace.favorite.FavoriteFragment;
 import com.patchanok.assigmentmyplace.favorite.FavoriteViewmodel;
-import com.patchanok.assigmentmyplace.model.FavoriteItemObject;
+import com.patchanok.assigmentmyplace.geofence.GeofenceBroadcastReceiver;
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
 import com.patchanok.assigmentmyplace.nearby.NearbyFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.patchanok.assigmentmyplace.Constants.TYPE_REQUEST_CAFE;
 
 /**
  * Created by patchanok on 3/28/2018 AD.
  */
 
-public class MainFragmentActivity extends BaseActivity {
+public class MainFragmentActivity extends BaseActivity implements OnCompleteListener<Void> {
 
     private FusedLocationProviderClient mFusedLocationClient;
     private static GoogleApiClient mGoogleApiClient;
@@ -44,15 +58,19 @@ public class MainFragmentActivity extends BaseActivity {
     private NearbyViewmodel nearbyViewmodel;
     private FavoriteViewmodel favoriteViewmodel;
 
+    private GeofencingClient geofencingClient;
+    private List<Geofence> geofenceList;
+    private PendingIntent mGeofencePendingIntent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment_main);
         initialView();
         initLocationService();
+        initialGeofence();
         nearbyViewmodel = ViewModelProviders.of(this).get(NearbyViewmodel.class);
         favoriteViewmodel = ViewModelProviders.of(this).get(FavoriteViewmodel.class);
-        getFavorite();
     }
 
     private void initialView() {
@@ -90,26 +108,25 @@ public class MainFragmentActivity extends BaseActivity {
     }
 
     private void getNearbyPlace(double lat, double lng) {
-        nearbyViewmodel.checkAuthFirebase(lat, lng, "cafe", getResources().getString(R.string.google_place_key))
+        nearbyViewmodel.checkAuthFirebase(lat, lng, TYPE_REQUEST_CAFE, getResources().getString(R.string.google_place_key))
                 .observe(this, allPlaceDataObject -> {
                     EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
-//                    EventBus.getDefault().postSticky(new FavoritePlaceEvent(allPlaceDataObject.getFavoriteItemObjectList()));
+                    getFavorite();
                 });
     }
 
-    private void getFavorite(){
-        favoriteViewmodel.getFavoritePlace().observe(this, new Observer<List<FavoriteItemObject>>() {
-            @Override
-            public void onChanged(@Nullable List<FavoriteItemObject> favoriteItemObjects) {
-                EventBus.getDefault().postSticky(new FavoritePlaceEvent(favoriteItemObjects));
-
+    private void getFavorite() {
+        favoriteViewmodel.getFavoritePlace().observe(this, favoriteItemObjects -> {
+            EventBus.getDefault().postSticky(new FavoritePlaceEvent(favoriteItemObjects));
+            if (favoriteItemObjects.size() != 0) {
+                populateGeofenceList(favoriteItemObjects);
             }
         });
     }
 
     private void requestPermissions() {
         if (ContextCompat.checkSelfPermission(MainFragmentActivity.this,
-                Manifest.permission.READ_CONTACTS)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainFragmentActivity.this,
@@ -152,7 +169,7 @@ public class MainFragmentActivity extends BaseActivity {
                         initLocationService();
                     }
                 } else {
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -174,5 +191,67 @@ public class MainFragmentActivity extends BaseActivity {
         }
     }
 
+    private void initialGeofence() {
+        geofenceList = new ArrayList<>();
+        mGeofencePendingIntent = null;
+        geofencingClient = LocationServices.getGeofencingClient(this);
+    }
 
+    private void addGeofences() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
+            return;
+        }
+        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                .addOnCompleteListener(this);
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        mGeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return mGeofencePendingIntent;
+    }
+
+    private void populateGeofenceList(List<FavoriteItemObject> favoriteItemObjectList) {
+        float GEOFENCE_RADIUS_IN_METERS = 100;
+        Map<String, LatLng> landmark = new HashMap<>();
+
+        if (favoriteItemObjectList.size() != 0) {
+            for (FavoriteItemObject favoriteItem : favoriteItemObjectList) {
+                landmark.put(favoriteItem.getFavName(), new LatLng(favoriteItem.getFavLat(), favoriteItem.getFavLng()));
+            }
+        }
+
+
+        for (Map.Entry<String, LatLng> entry : landmark.entrySet()) {
+            geofenceList.add(new Geofence.Builder()
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            GEOFENCE_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+
+        addGeofences();
+    }
+
+    @Override
+    public void onComplete(@NonNull Task<Void> task) {
+    }
 }

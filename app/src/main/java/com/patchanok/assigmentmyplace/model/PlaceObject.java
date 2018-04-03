@@ -2,6 +2,7 @@ package com.patchanok.assigmentmyplace.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.patchanok.assigmentmyplace.nearby.NearbyItemObject;
 
 import java.util.List;
 

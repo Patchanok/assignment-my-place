@@ -1,4 +1,4 @@
-package com.patchanok.assigmentmyplace.model;
+package com.patchanok.assigmentmyplace.favorite;
 
 /**
  * Created by patchanok on 4/1/2018 AD.
@@ -13,11 +13,12 @@ public class FavoriteItemObject {
     private double favLng;
     private boolean isFavorite;
     private String vicinity;
+    private String placeId;
 
     public FavoriteItemObject(){}
 
     public FavoriteItemObject(String favId, String favName, String favUrl, double favLat,
-                              double favLng, boolean isFavorite, String vicinity) {
+                              double favLng, boolean isFavorite, String vicinity, String placeId) {
         this.favId = favId;
         this.favName = favName;
         this.favUrl = favUrl;
@@ -25,6 +26,7 @@ public class FavoriteItemObject {
         this.favLng = favLng;
         this.isFavorite = isFavorite;
         this.vicinity = vicinity;
+        this.placeId = placeId;
     }
 
     public String getFavId() {
@@ -53,5 +55,9 @@ public class FavoriteItemObject {
 
     public String getVicinity() {
         return vicinity;
+    }
+
+    public String getPlaceId() {
+        return placeId;
     }
 }

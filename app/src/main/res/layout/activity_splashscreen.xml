@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="@dimen/dp130"
+        android:layout_height="@dimen/dp130"
+        android:background="@drawable/circle_background">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_pin_map"
+            android:padding="@dimen/dp25"/>
+    </RelativeLayout>
+
+</LinearLayout>

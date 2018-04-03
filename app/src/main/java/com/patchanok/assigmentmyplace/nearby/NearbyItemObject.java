@@ -1,6 +1,4 @@
-package com.patchanok.assigmentmyplace.model;
-
-import java.util.List;
+package com.patchanok.assigmentmyplace.nearby;
 
 /**
  * Created by patchanok on 3/30/2018 AD.
@@ -15,9 +13,12 @@ public class NearbyItemObject {
     private double lng;
     private boolean isFavorite;
     private String vicinity;
+    private String placeId;
+
+    public NearbyItemObject(){}
 
     public NearbyItemObject(String id, String name, String url, double lat,
-                            double lng, boolean isFavorite, String vicinity) {
+                            double lng, boolean isFavorite, String vicinity, String placeId) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -25,6 +26,7 @@ public class NearbyItemObject {
         this.lng = lng;
         this.isFavorite = isFavorite;
         this.vicinity = vicinity;
+        this.placeId = placeId;
     }
 
     public String getId() {
@@ -53,5 +55,9 @@ public class NearbyItemObject {
 
     public String getVicinity() {
         return vicinity;
+    }
+
+    public String getPlaceId() {
+        return placeId;
     }
 }

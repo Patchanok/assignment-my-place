@@ -1,5 +1,6 @@
 package com.patchanok.assigmentmyplace.service;
 
+import com.patchanok.assigmentmyplace.main.PlaceDetailByIdObject;
 import com.patchanok.assigmentmyplace.model.PlaceObject;
 
 import retrofit2.Call;
@@ -16,4 +17,8 @@ public interface ApiService {
                                      @Query("radius") double radius,
                                      @Query("type") String types,
                                      @Query("key") String key);
+
+    @GET("details/json?")
+    Call<PlaceDetailByIdObject> getPlaceDetailById(@Query("placeid") String placeId,
+                                               @Query("key") String key);
 }

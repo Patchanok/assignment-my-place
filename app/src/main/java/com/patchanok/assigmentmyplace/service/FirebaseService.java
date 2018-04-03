@@ -1,15 +1,11 @@
 package com.patchanok.assigmentmyplace.service;
 
-import android.util.Log;
-
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.patchanok.assigmentmyplace.firebase.RxFirebaseAuth;
-import com.patchanok.assigmentmyplace.firebase.RxFirebaseChildEvent;
 import com.patchanok.assigmentmyplace.firebase.RxFirebaseDatabase;
-import com.patchanok.assigmentmyplace.model.FavoriteItemObject;
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,25 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
+
+import static com.patchanok.assigmentmyplace.Constants.*;
 
 /**
  * Created by patchanok on 3/31/2018 AD.
  */
 
 public class FirebaseService {
-
-    public static final String KEY_FAV = "favorites";
-    public static final String MAP_USER_UID = "userUid";
-
-    public static final String MAP_FAVID = "favId";
-    public static final String MAP_FAVNAME = "favName";
-    public static final String MAP_FAVLAT = "favLat";
-    public static final String MAP_FAVLNG = "favLng";
-    public static final String MAP_FAVURL = "favUrl";
-    public static final String MAP_IS_FAV = "favorite";
-    public static final String MAP_FAVVICI = "vicinity";
-
 
     public DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     private RxFirebaseAuth authenticate = new RxFirebaseAuth();
@@ -67,6 +52,8 @@ public class FirebaseService {
                             mapResult.put(MAP_FAVURL, value.get(MAP_FAVURL));
                             mapResult.put(MAP_IS_FAV, value.get(MAP_IS_FAV));
                             mapResult.put(MAP_FAVVICI, value.get(MAP_FAVVICI));
+                            mapResult.put(MAP_PLACEID, value.get(MAP_PLACEID));
+
                             mapList.add(mapResult);
                         }
                     }

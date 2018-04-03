@@ -5,8 +5,8 @@ import android.arch.lifecycle.ViewModel;
 
 import com.patchanok.assigmentmyplace.firebase.RxFirebaseAuth;
 import com.patchanok.assigmentmyplace.model.AllPlaceDataObject;
-import com.patchanok.assigmentmyplace.model.FavoriteItemObject;
-import com.patchanok.assigmentmyplace.model.NearbyItemObject;
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
+import com.patchanok.assigmentmyplace.nearby.NearbyItemObject;
 import com.patchanok.assigmentmyplace.model.PhotoObject;
 import com.patchanok.assigmentmyplace.model.PlaceDetailObject;
 import com.patchanok.assigmentmyplace.model.PlaceObject;
@@ -27,14 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVID;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLAT;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVLNG;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVNAME;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVURL;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_FAVVICI;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_IS_FAV;
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_USER_UID;
+import static com.patchanok.assigmentmyplace.Constants.*;
 import static com.patchanok.assigmentmyplace.service.HttpClient.BASE_URL;
 
 /**
@@ -44,8 +37,8 @@ import static com.patchanok.assigmentmyplace.service.HttpClient.BASE_URL;
 public class NearbyViewmodel extends ViewModel {
 
     private final String API_KEY = "AIzaSyC4r5i4Qlifrb8FMR4qhW5xrfU_XsXCLKs";
-    private String location;
     private final int radius = 500;
+    private String location;
 
     private HttpClient service;
     private FirebaseService firebaseService = new FirebaseService();
@@ -103,7 +96,7 @@ public class NearbyViewmodel extends ViewModel {
             @Override
             public void onResponse(Call<PlaceObject> call, Response<PlaceObject> response) {
 
-                if (response.body().getStatus().equals("OK")) {
+                if (response.body().getStatus().equals(STATUS_RESULT_OK)) {
                     Observable<PlaceObject> placeObjectObservable = Observable.just(response.body());
                     Observable.zip(placeObjectObservable, firebaseService.getFavoritePlace(), (placeObject, favoriteMaps) -> {
                         List<FavoriteItemObject> favoriteItemObjectList = new ArrayList<>();
@@ -117,7 +110,8 @@ public class NearbyViewmodel extends ViewModel {
                                         result.get(MAP_FAVURL).toString(),
                                         Double.valueOf(result.get(MAP_FAVLAT).toString()),
                                         Double.valueOf(result.get(MAP_FAVLNG).toString()),
-                                        isFav, result.get(MAP_FAVVICI).toString()
+                                        isFav, result.get(MAP_FAVVICI).toString(),
+                                        result.get(MAP_PLACEID).toString()
                                 );
                             }
                             favoriteItemObjectList.add(favoriteItem);
@@ -128,10 +122,11 @@ public class NearbyViewmodel extends ViewModel {
                         List<Map<String, String>> favorites = new ArrayList<>();
                         for (PlaceDetailObject placeDetailObject : allPlaceDataObject.getPlaceObject().getPlaceDetailObject()) {
                             for (FavoriteItemObject favoriteItemObject : allPlaceDataObject.getFavoriteItemObjectList()) {
-                                if (placeDetailObject.getId().equals(favoriteItemObject.getFavId())) {
+                                if (placeDetailObject.getId().equals(favoriteItemObject.getFavId()) &&
+                                        favoriteItemObject.isFavorite()) {
                                     Map<String, String> fav = new HashMap<>();
-                                    fav.put("id", favoriteItemObject.getFavId());
-                                    fav.put("isFav", String.valueOf(favoriteItemObject.isFavorite()));
+                                    fav.put(MAP_FAV_ID, favoriteItemObject.getFavId());
+                                    fav.put(MAP_FAV_ISFAV, String.valueOf(favoriteItemObject.isFavorite()));
                                     favorites.add(fav);
                                 }
                             }
@@ -175,41 +170,54 @@ public class NearbyViewmodel extends ViewModel {
         return placeObjectMutableLiveData;
     }
 
-    private List<NearbyItemObject> getNearbyItem(PlaceObject placeObject, List<Map<String, String>> favorites) {
-        String name;
+    private List<NearbyItemObject> getNearbyItem(PlaceObject placeObject, List<Map<String, String>> favoritesPlaceCurrent) {
+        String name, vicinity, placeId;
         String url = "";
-        String vicinity;
-        boolean isFavorite = false;
-        double lat;
-        double lng;
+        double lat, lng;
         List<PlaceDetailObject> placeDetailObjectList = placeObject.getPlaceDetailObject();
         List<PhotoObject> photoObjectList;
         List<NearbyItemObject> nearbyItemObjectList = new ArrayList<>();
 
         for (PlaceDetailObject placeDetailObject : placeDetailObjectList) {
             name = checkIsEmpty(placeDetailObject.getName());
-            lat = Double.valueOf(checkIsEmpty(String.valueOf(placeDetailObject.getGeometry().getLocationObject().getLat())));
-            lng = Double.valueOf(checkIsEmpty(String.valueOf(placeDetailObject.getGeometry().getLocationObject().getLng())));
-            vicinity = placeDetailObject.getVicinity();
+            lat = checkDouble(placeDetailObject.getGeometry().getLocationObject().getLat());
+            lng = checkDouble(placeDetailObject.getGeometry().getLocationObject().getLng());
+            vicinity = checkIsEmpty(placeDetailObject.getVicinity());
+            placeId = checkIsEmpty(placeDetailObject.getPlaceId());
             if (placeDetailObject.getPhotoObjectList() != null) {
                 photoObjectList = placeDetailObject.getPhotoObjectList();
                 for (PhotoObject photoObject : photoObjectList) {
-                    url = BASE_URL + "photo?maxwidth=100&photoreference=" + photoObject.getPhotoReference() + "&key=" + API_KEY;
+                    url = BASE_URL + "photo?maxwidth=100&photoreference=" +
+                            photoObject.getPhotoReference() + "&key=" + API_KEY;
                 }
             }
 
-            for (Map<String, String> favDetail : favorites) {
-                if (placeDetailObject.getId().equals(favDetail.get("id"))) {
-                    isFavorite = Boolean.parseBoolean(favDetail.get("isFav"));
-                } else if (!placeDetailObject.getId().equals(favDetail.get("id"))) {
-                    isFavorite = false;
+            NearbyItemObject nearbyItemObject = new NearbyItemObject();
+            if (favoritesPlaceCurrent.size() != 0) {
+                List<String> object = new ArrayList<>();
+                for (Map<String, String> fav : favoritesPlaceCurrent) {
+                    object.add(fav.get(MAP_FAV_ID));
                 }
+                if (object.contains(placeDetailObject.getId())) {
+                    nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(),
+                            name, url, lat, lng, true, vicinity, placeId);
+                } else {
+                    nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(),
+                            name, url, lat, lng, false, vicinity, placeId);
+                }
+                nearbyItemObjectList.add(nearbyItemObject);
+            } else {
+                nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(),
+                        name, url, lat, lng, false, vicinity, placeId);
+                nearbyItemObjectList.add(nearbyItemObject);
             }
-
-            NearbyItemObject nearbyItemObject = new NearbyItemObject(placeDetailObject.getId(), name, url, lat, lng, isFavorite, vicinity);
-            nearbyItemObjectList.add(nearbyItemObject);
         }
         return nearbyItemObjectList;
+    }
+
+    private Double checkDouble(Double position) {
+        String positonString = String.valueOf(position);
+        return Double.valueOf(checkIsEmpty(positonString));
     }
 
     private String checkIsEmpty(String value) {

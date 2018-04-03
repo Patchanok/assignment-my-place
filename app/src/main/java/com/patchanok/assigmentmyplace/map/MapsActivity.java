@@ -1,16 +1,14 @@
 package com.patchanok.assigmentmyplace.map;
 
 import android.Manifest;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -19,42 +17,48 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.patchanok.assigmentmyplace.NearbyEvent;
 import com.patchanok.assigmentmyplace.R;
 import com.patchanok.assigmentmyplace.base.BaseActivity;
-import com.patchanok.assigmentmyplace.databinding.ActivityMapsBinding;
 import com.patchanok.assigmentmyplace.main.NearbyViewmodel;
-import com.patchanok.assigmentmyplace.model.AllPlaceDataObject;
 
 import org.greenrobot.eventbus.EventBus;
+
+import static com.patchanok.assigmentmyplace.Constants.TYPE_REQUEST_CAFE;
 
 public class MapsActivity extends BaseActivity implements
         OnMapReadyCallback, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveListener {
 
-    private ActivityMapsBinding binding;
+    //    private ActivityMapsBinding binding;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap mMap;
     private LatLng latLng;
-
     private NearbyViewmodel nearbyViewmodel;
+
+    private RelativeLayout snippetLayout;
+    private TextView snippetLabelTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(MapsActivity.this, R.layout.activity_maps);
+        setContentView(R.layout.activity_maps);
+//        binding = DataBindingUtil.setContentView(MapsActivity.this, R.layout.activity_maps);
 
         ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
                 .findViewById(android.R.id.content)).getChildAt(0);
         initialBaseView(viewGroup, true);
+        snippetLayout = findViewById(R.id.snippet_marker);
+        snippetLabelTV = findViewById(R.id.snippet_label);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         nearbyViewmodel = ViewModelProviders.of(this).get(NearbyViewmodel.class);
-        binding.setIsEnableSnippet(false);
-        binding.setView(MapsActivity.this);
+        snippetLayout.setVisibility(View.GONE);
+        snippetLabelTV.setOnClickListener(v -> onClickSnippetMarker());
+//        binding.setIsEnableSnippet(false);
+//        binding.setView(MapsActivity.this);
 
     }
 
@@ -70,14 +74,17 @@ public class MapsActivity extends BaseActivity implements
     @Override
     public void onCameraIdle() {
         latLng = mMap.getCameraPosition().target;
-        binding.setIsEnableSnippet(true);
-        onClickSnippetMarker();
+//        binding.setIsEnableSnippet(true);
+        snippetLayout.setVisibility(View.VISIBLE);
+//        onClickSnippetMarker();
 
     }
 
     @Override
     public void onCameraMove() {
-        binding.setIsEnableSnippet(false);
+//        binding.setIsEnableSnippet(false);
+        snippetLayout.setVisibility(View.GONE);
+
     }
 
     private void initLocationService() {
@@ -98,9 +105,9 @@ public class MapsActivity extends BaseActivity implements
         }
     }
 
-    public View.OnClickListener onClickSnippetMarker() {
-        return v -> nearbyViewmodel.checkAuthFirebase(latLng.latitude, latLng.longitude,
-                "cafe", getResources().getString(R.string.google_place_key))
+    public void onClickSnippetMarker() {
+        nearbyViewmodel.checkAuthFirebase(latLng.latitude, latLng.longitude,
+                TYPE_REQUEST_CAFE, getResources().getString(R.string.google_place_key))
                 .observe(MapsActivity.this, allPlaceDataObject -> {
                     EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
                     finish();

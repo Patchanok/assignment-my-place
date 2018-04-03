@@ -44,37 +44,4 @@ public class RxFirebaseDatabase {
                     }
                 }));
     }
-
-    public static Observable<RxFirebaseChildEvent<DataSnapshot>> observeChildEvent(final Query query) {
-        return Observable.create(e -> query.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                e.onNext(new RxFirebaseChildEvent<>(dataSnapshot.getKey(),
-                        dataSnapshot, previousChildName, RxFirebaseChildEvent.EventType.ADDED));
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                e.onNext(new RxFirebaseChildEvent<>(dataSnapshot.getKey(),
-                        dataSnapshot, previousChildName, RxFirebaseChildEvent.EventType.CHANGED));
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                e.onNext(new RxFirebaseChildEvent<>(dataSnapshot.getKey(),
-                        dataSnapshot, RxFirebaseChildEvent.EventType.REMOVED));
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                e.onNext(new RxFirebaseChildEvent<>(dataSnapshot.getKey(),
-                        dataSnapshot, previousChildName, RxFirebaseChildEvent.EventType.MOVED));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                e.onError(databaseError.toException());
-            }
-        }));
-    }
 }

@@ -1,6 +1,5 @@
 package com.patchanok.assigmentmyplace;
 
-import android.databinding.BindingAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,7 +12,7 @@ public final class BindingUtil {
 
     private BindingUtil(){}
 
-    @BindingAdapter("imagePath")
+//    @BindingAdapter("imagePath")
     public static void loadImage(ImageView imageView, Object url) {
 
         Glide.with(imageView.getContext()).load(url).into(imageView);

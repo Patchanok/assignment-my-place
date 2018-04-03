@@ -10,7 +10,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
-import static com.patchanok.assigmentmyplace.service.FirebaseService.MAP_USER_UID;
+import static com.patchanok.assigmentmyplace.Constants.MAP_USER_UID;
 
 /**
  * Created by patchanok on 3/31/2018 AD.

@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:bind="http://schemas.android.com/tools">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-        <import type="android.view.View"/>
-        <variable
-            name="isEnable"
-            type="java.lang.Boolean" />
-    </data>
+    <TextView
+        android:id="@+id/no_data_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp20"
+        android:text="@string/nodata_favorite_title" />
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/favorite_recyclerview"
+        style="@style/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/no_data_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/dp20"
-            android:text="@string/nodata_favorite_title"
-            bind:visibility="@{ isEnable? View.GONE : View.VISIBLE }" />
+    </android.support.v7.widget.RecyclerView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/favorite_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/recyclerview">
-
-        </android.support.v7.widget.RecyclerView>
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

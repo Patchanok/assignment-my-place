@@ -10,4 +10,10 @@
     <string name="nodata_favorite_title">No favorite place</string>
     <string name="seelocation_title">See location</string>
 
+    <string name="notification_detail">You near this favorite place.</string>
+    <string name="dont_have_url">This place dont have Website.</string>
+
+    <string name="permission_denied">permission denied</string>
+
+
 </resources>

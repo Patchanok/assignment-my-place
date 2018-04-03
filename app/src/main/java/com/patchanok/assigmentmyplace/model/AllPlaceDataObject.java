@@ -1,5 +1,7 @@
 package com.patchanok.assigmentmyplace.model;
 
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
+
 import java.util.List;
 
 /**

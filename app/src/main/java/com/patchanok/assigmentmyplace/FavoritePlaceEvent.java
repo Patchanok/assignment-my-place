@@ -1,6 +1,6 @@
 package com.patchanok.assigmentmyplace;
 
-import com.patchanok.assigmentmyplace.model.FavoriteItemObject;
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,4 +20,6 @@ public class FavoritePlaceEvent {
     public List<FavoriteItemObject> getFavoriteItemObjectList() {
         return favoriteItemObjectList;
     }
+
+
 }
