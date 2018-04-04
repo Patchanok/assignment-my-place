@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="isEnableTitle"
+            type="Boolean" />
+        <variable
+            name="isEnableProgress"
+            type="Boolean"/>
+        <variable
+            name="view"
+            type="com.patchanok.assigmentmyplace.nearby.NearbyFragment"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/no_data_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/dp20"
+            android:text="@string/nodata_nearby_title"
+            android:visibility="@{ isEnableTitle ? View.VISIBLE : View.GONE }"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/nearby_recyclerview"
+            style="@style/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/nearby_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{ isEnableProgress ? View.VISIBLE : View.GONE }"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/dp20"
+            android:src="@drawable/ic_pin_map"
+            android:onClick="@{ view.openMap() }"/>
+
+    </RelativeLayout>
+</layout>
