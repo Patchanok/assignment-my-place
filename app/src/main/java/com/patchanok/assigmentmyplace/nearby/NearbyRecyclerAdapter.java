@@ -96,14 +96,12 @@ public class NearbyRecyclerAdapter extends RecyclerView.Adapter<NearbyRecyclerAd
             likeButton.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
-                    nearbyItemObject.setFavorite(true);
-                    onItemEventClick.isFavoriteListener(nearbyItemObject.isFavorite(), nearbyItemObject);
+                    onItemEventClick.isFavoriteListener(likeButton.isLiked(), nearbyItemObject);
                 }
 
                 @Override
                 public void unLiked(LikeButton likeButton) {
-                    nearbyItemObject.setFavorite(false);
-                    onItemEventClick.isFavoriteListener(nearbyItemObject.isFavorite(), nearbyItemObject);
+                    onItemEventClick.isFavoriteListener(likeButton.isLiked(), nearbyItemObject);
                 }
             });
             itemBinding.setType(TYPE_NEARBY);

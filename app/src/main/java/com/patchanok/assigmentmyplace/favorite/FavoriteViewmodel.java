@@ -59,6 +59,7 @@ public class FavoriteViewmodel extends ViewModel {
                     @Override
                     public void onNext(Map<String, Boolean> stringBooleanMap) {
                         result.setValue(stringBooleanMap);
+                        nearbyItemObject.setFavorite(isFavorite);
                     }
 
                     @Override

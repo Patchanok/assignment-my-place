@@ -27,6 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.patchanok.assigmentmyplace.Constants.API_KEY;
 import static com.patchanok.assigmentmyplace.Constants.MAP_FAVID;
 import static com.patchanok.assigmentmyplace.Constants.MAP_FAVLAT;
 import static com.patchanok.assigmentmyplace.Constants.MAP_FAVLNG;
@@ -47,7 +48,6 @@ import static com.patchanok.assigmentmyplace.service.HttpClient.BASE_URL;
 
 public class NearbyViewmodel extends ViewModel {
 
-    private final String API_KEY = "AIzaSyC4r5i4Qlifrb8FMR4qhW5xrfU_XsXCLKs";
     private final int radius = 500;
     private String location;
 

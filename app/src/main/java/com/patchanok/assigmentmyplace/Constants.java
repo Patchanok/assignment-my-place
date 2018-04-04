@@ -2,6 +2,9 @@ package com.patchanok.assigmentmyplace;
 
 public class Constants {
 
+//    public final static String API_KEY = "AIzaSyC4r5i4Qlifrb8FMR4qhW5xrfU_XsXCLKs";
+    public static final String API_KEY = "AIzaSyCEcVIX0uxl6ACEZkN5hQjb-_ZHWaUlLX8";
+
     public static final float GEOFENCE_RADIUS_IN_METERS = 100;
 
     public static final String TYPE_REQUEST_CAFE = "cafe";
