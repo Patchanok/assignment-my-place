@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.patchanok.assigmentmyplace.Constants.GEOFENCE_RADIUS_IN_METERS;
 import static com.patchanok.assigmentmyplace.Constants.TYPE_REQUEST_CAFE;
 
 /**
@@ -59,8 +60,8 @@ public class MainFragmentActivity extends BaseActivity implements OnCompleteList
     private FavoriteViewmodel favoriteViewmodel;
 
     private GeofencingClient geofencingClient;
-    private List<Geofence> geofenceList;
     private PendingIntent mGeofencePendingIntent;
+    private List<Geofence> geofenceList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,13 +110,13 @@ public class MainFragmentActivity extends BaseActivity implements OnCompleteList
 
     private void getNearbyPlace(double lat, double lng) {
         nearbyViewmodel.checkAuthFirebase(lat, lng, TYPE_REQUEST_CAFE, getResources().getString(R.string.google_place_key))
-                .observe(this, allPlaceDataObject -> {
-                    EventBus.getDefault().postSticky(new NearbyEvent(allPlaceDataObject.getPlaceObject()));
-                    getFavorite();
+                .observe(this, placeObject -> {
+                    EventBus.getDefault().postSticky(new NearbyEvent(placeObject));
+                    getFavoritePlace();
                 });
     }
 
-    private void getFavorite() {
+    private void getFavoritePlace() {
         favoriteViewmodel.getFavoritePlace().observe(this, favoriteItemObjects -> {
             EventBus.getDefault().postSticky(new FavoritePlaceEvent(favoriteItemObjects));
             if (favoriteItemObjects.size() != 0) {
@@ -197,34 +198,7 @@ public class MainFragmentActivity extends BaseActivity implements OnCompleteList
         geofencingClient = LocationServices.getGeofencingClient(this);
     }
 
-    private void addGeofences() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions();
-            return;
-        }
-        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnCompleteListener(this);
-    }
-
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(geofenceList);
-        return builder.build();
-    }
-
-    private PendingIntent getGeofencePendingIntent() {
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
-        }
-        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        mGeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return mGeofencePendingIntent;
-    }
-
     private void populateGeofenceList(List<FavoriteItemObject> favoriteItemObjectList) {
-        float GEOFENCE_RADIUS_IN_METERS = 100;
         Map<String, LatLng> landmark = new HashMap<>();
 
         if (favoriteItemObjectList.size() != 0) {
@@ -249,6 +223,32 @@ public class MainFragmentActivity extends BaseActivity implements OnCompleteList
         }
 
         addGeofences();
+    }
+
+    private void addGeofences() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
+            return;
+        }
+        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                .addOnCompleteListener(this);
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        if (mGeofencePendingIntent != null) {
+            return mGeofencePendingIntent;
+        }
+        Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
+        mGeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return mGeofencePendingIntent;
     }
 
     @Override

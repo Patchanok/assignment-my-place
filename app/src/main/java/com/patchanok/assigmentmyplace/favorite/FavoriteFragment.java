@@ -2,6 +2,7 @@ package com.patchanok.assigmentmyplace.favorite;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,12 +12,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.patchanok.assigmentmyplace.FavoritePlaceEvent;
 import com.patchanok.assigmentmyplace.R;
 import com.patchanok.assigmentmyplace.base.BaseFragment;
+import com.patchanok.assigmentmyplace.databinding.FragmentFavoriteBinding;
 import com.patchanok.assigmentmyplace.main.PlaceDetailViewmodel;
 import com.patchanok.assigmentmyplace.nearby.NearbyRecyclerAdapter;
 
@@ -32,10 +33,9 @@ import static com.patchanok.assigmentmyplace.Constants.TYPE_FAV;
 
 public class FavoriteFragment extends BaseFragment {
 
+    private FragmentFavoriteBinding binding;
     private NearbyRecyclerAdapter adapter;
     private RecyclerView recyclerView;
-    private TextView noDataTV;
-
     private PlaceDetailViewmodel placeDetailViewmodel;
 
     public static FavoriteFragment newInstance() {
@@ -48,10 +48,10 @@ public class FavoriteFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
-        placeDetailViewmodel = ViewModelProviders.of(this).get(PlaceDetailViewmodel.class);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favorite, container, false);
+        View rootView = binding.getRoot();
         initialView(rootView);
+        placeDetailViewmodel = ViewModelProviders.of(this).get(PlaceDetailViewmodel.class);
         EventBus.getDefault().register(this);
 
         return rootView;
@@ -63,7 +63,6 @@ public class FavoriteFragment extends BaseFragment {
     }
 
     private void initialView(View view) {
-        noDataTV = view.findViewById(R.id.no_data_textview);
         recyclerView = view.findViewById(R.id.favorite_recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -90,10 +89,10 @@ public class FavoriteFragment extends BaseFragment {
 
     private void isEnable(FavoritePlaceEvent favoritePlaceEvent) {
         if (favoritePlaceEvent.getFavoriteItemObjectList().size() != 0) {
-            noDataTV.setVisibility(View.GONE);
+            binding.setIsEnableTitle(false);
             adapter.setFavoriteObjectList(favoritePlaceEvent.favoriteItemObjectList);
         } else {
-            noDataTV.setVisibility(View.VISIBLE);
+            binding.setIsEnableTitle(true);
         }
     }
 }

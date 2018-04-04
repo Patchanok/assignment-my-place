@@ -3,13 +3,13 @@ package com.patchanok.assigmentmyplace.main;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
 import com.patchanok.assigmentmyplace.firebase.RxFirebaseAuth;
 import com.patchanok.assigmentmyplace.model.AllPlaceDataObject;
-import com.patchanok.assigmentmyplace.favorite.FavoriteItemObject;
-import com.patchanok.assigmentmyplace.nearby.NearbyItemObject;
 import com.patchanok.assigmentmyplace.model.PhotoObject;
 import com.patchanok.assigmentmyplace.model.PlaceDetailObject;
 import com.patchanok.assigmentmyplace.model.PlaceObject;
+import com.patchanok.assigmentmyplace.nearby.NearbyItemObject;
 import com.patchanok.assigmentmyplace.service.FirebaseService;
 import com.patchanok.assigmentmyplace.service.HttpClient;
 
@@ -27,7 +27,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.patchanok.assigmentmyplace.Constants.*;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVID;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVLAT;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVLNG;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVNAME;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVURL;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAVVICI;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAV_ID;
+import static com.patchanok.assigmentmyplace.Constants.MAP_FAV_ISFAV;
+import static com.patchanok.assigmentmyplace.Constants.MAP_IS_FAV;
+import static com.patchanok.assigmentmyplace.Constants.MAP_PLACEID;
+import static com.patchanok.assigmentmyplace.Constants.MAP_USER_UID;
+import static com.patchanok.assigmentmyplace.Constants.STATUS_RESULT_OK;
 import static com.patchanok.assigmentmyplace.service.HttpClient.BASE_URL;
 
 /**
@@ -42,16 +53,16 @@ public class NearbyViewmodel extends ViewModel {
 
     private HttpClient service;
     private FirebaseService firebaseService = new FirebaseService();
-    private MutableLiveData<AllPlaceDataObject> placeObjectMutableLiveData;
+    private MutableLiveData<PlaceObject> placeObjectMutableLiveData;
 
-    public MutableLiveData<AllPlaceDataObject> checkAuthFirebase(double lat, double lng, String type, String key) {
+    public MutableLiveData<PlaceObject> checkAuthFirebase(double lat, double lng, String type, String key) {
         if (RxFirebaseAuth.getCurrentUser() == null) {
             return registerFirebase(lat, lng, type, key);
         }
         return getNearbyPlace(lat, lng, type, key);
     }
 
-    public MutableLiveData<AllPlaceDataObject> registerFirebase(double lat, double lng, String type, String key) {
+    public MutableLiveData<PlaceObject> registerFirebase(double lat, double lng, String type, String key) {
         location = String.valueOf(lat) + "," + String.valueOf(lng);
         service = HttpClient.getInstance();
         firebaseService = new FirebaseService();
@@ -86,7 +97,7 @@ public class NearbyViewmodel extends ViewModel {
         return placeObjectMutableLiveData;
     }
 
-    public MutableLiveData<AllPlaceDataObject> getNearbyPlace(double lat, double lng, String type, String key) {
+    public MutableLiveData<PlaceObject> getNearbyPlace(double lat, double lng, String type, String key) {
         placeObjectMutableLiveData = new MutableLiveData<>();
         service = HttpClient.getInstance();
         firebaseService = new FirebaseService();
@@ -132,7 +143,8 @@ public class NearbyViewmodel extends ViewModel {
                             }
                         }
 
-                        allPlaceDataObject.getPlaceObject().setNearbyItemObjectList(getNearbyItem(allPlaceDataObject.getPlaceObject(), favorites));
+                        allPlaceDataObject.getPlaceObject().setNearbyItemObjectList(mapNearbyPlaceItem(
+                                allPlaceDataObject.getPlaceObject(), favorites));
                         return new AllPlaceDataObject(allPlaceDataObject.getPlaceObject(),
                                 allPlaceDataObject.getFavoriteItemObjectList());
                     })
@@ -146,7 +158,7 @@ public class NearbyViewmodel extends ViewModel {
 
                                 @Override
                                 public void onNext(AllPlaceDataObject allPlaceDataObject) {
-                                    placeObjectMutableLiveData.setValue(allPlaceDataObject);
+                                    placeObjectMutableLiveData.setValue(allPlaceDataObject.getPlaceObject());
                                 }
 
                                 @Override
@@ -170,7 +182,7 @@ public class NearbyViewmodel extends ViewModel {
         return placeObjectMutableLiveData;
     }
 
-    private List<NearbyItemObject> getNearbyItem(PlaceObject placeObject, List<Map<String, String>> favoritesPlaceCurrent) {
+    private List<NearbyItemObject> mapNearbyPlaceItem(PlaceObject placeObject, List<Map<String, String>> favoritesPlaceCurrent) {
         String name, vicinity, placeId;
         String url = "";
         double lat, lng;

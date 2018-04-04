@@ -1,57 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp10"
-    android:orientation="horizontal">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/icon_image"
-        android:layout_width="@dimen/dp0"
-        android:layout_height="@dimen/dp75"
-        android:layout_weight="1"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"/>
+    <data>
+
+        <import type="java.lang.String" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="type"
+            type="java.lang.String" />
+
+        <variable
+            name="nearbyObject"
+            type="com.patchanok.assigmentmyplace.nearby.NearbyItemObject" />
+
+        <variable
+            name="favoriteObject"
+            type="com.patchanok.assigmentmyplace.favorite.FavoriteItemObject" />
+    </data>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="3"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp10"
-        android:paddingRight="@dimen/dp10">
+        android:layout_marginBottom="@dimen/dp10"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/place_name_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorGray700"/>
+        <ImageView
+            android:id="@+id/icon_image"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="@dimen/dp75"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:imagePath="@{ type.equals(`nearby`) ? nearbyObject.url : favoriteObject.favUrl }" />
 
-        <TextView
-            android:id="@+id/place_des_textview"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp5"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp10"
+            android:paddingRight="@dimen/dp10">
+
+            <TextView
+                android:id="@+id/place_name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{ type.equals(`nearby`) ? nearbyObject.name : favoriteObject.favName }"
+                android:textColor="@color/colorGray700" />
+
+            <TextView
+                android:id="@+id/place_des_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp5"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{ type.equals(`nearby`) ? nearbyObject.vicinity : favoriteObject.vicinity }" />
+
+        </LinearLayout>
+
+        <com.like.LikeButton
+            android:id="@+id/favorite_button"
+            android:layout_width="@dimen/dp0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="@{ type.equals(`nearby`) ? View.VISIBLE : View.INVISIBLE }"
+            app:anim_scale_factor="2"
+            app:circle_end_color="@color/colorAccent"
+            app:circle_start_color="@color/colorPrimary"
+            app:dots_primary_color="@color/colorAccent"
+            app:dots_secondary_color="@color/colorPrimary"
+            app:icon_size="@dimen/dp25"
+            app:icon_type="Star">
+
+        </com.like.LikeButton>
 
     </LinearLayout>
-
-    <com.like.LikeButton
-        android:id="@+id/favorite_button"
-        android:layout_width="@dimen/dp0"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        app:anim_scale_factor="2"
-        app:circle_end_color="@color/colorAccent"
-        app:circle_start_color="@color/colorPrimary"
-        app:dots_primary_color="@color/colorAccent"
-        app:dots_secondary_color="@color/colorPrimary"
-        app:icon_size="@dimen/dp25"
-        app:icon_type="Star">
-
-    </com.like.LikeButton>
-
-</LinearLayout>
+</layout>

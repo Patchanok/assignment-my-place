@@ -2,6 +2,8 @@ package com.patchanok.assigmentmyplace;
 
 public class Constants {
 
+    public static final float GEOFENCE_RADIUS_IN_METERS = 100;
+
     public static final String TYPE_REQUEST_CAFE = "cafe";
     public static final String TYPE_FAV = "favorite";
     public static final String TYPE_NEARBY = "nearby";

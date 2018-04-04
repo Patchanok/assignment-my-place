@@ -29,7 +29,7 @@ public class FirebaseService {
         return authenticate.rxLoginAnonymous();
     }
 
-    public Observable<Map<String, Boolean>> createFavoriteItem(FavoriteItemObject favoriteItemObject) {
+    public Observable<Map<String, Boolean>> createFavoritePlace(FavoriteItemObject favoriteItemObject) {
         return RxFirebaseDatabase.create(mDatabaseReference
                 .child(KEY_FAV).child(RxFirebaseAuth.getCurrentUser().getUid())
                 .child(favoriteItemObject.getFavId()), favoriteItemObject);

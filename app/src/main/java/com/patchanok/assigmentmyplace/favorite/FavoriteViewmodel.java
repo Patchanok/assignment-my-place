@@ -41,7 +41,7 @@ public class FavoriteViewmodel extends ViewModel {
                 nearbyItemObject.getLat(), nearbyItemObject.getLng(), isFavorite,
                 nearbyItemObject.getVicinity(), nearbyItemObject.getPlaceId());
 
-        firebaseService.createFavoriteItem(favoriteItemObject)
+        firebaseService.createFavoritePlace(favoriteItemObject)
                 .map(stringBooleanMap -> {
                     if (stringBooleanMap.get(ONCOMPLETE)) {
                         mapResult.put(MAP_IS_FAV, isFavorite);
@@ -79,7 +79,6 @@ public class FavoriteViewmodel extends ViewModel {
         List<FavoriteItemObject> favoriteItemObjectList = new ArrayList<>();
         favoriteMutableLiveData = new MutableLiveData<>();
         firebaseService = new FirebaseService();
-//        if (RxFirebaseAuth.getCurrentUser().getUid() != null) {
             firebaseService.getFavoritePlace().map(maps -> {
                 favoriteItemObjectList.clear();
                 for (Map<String, Object> result : maps) {
@@ -123,7 +122,6 @@ public class FavoriteViewmodel extends ViewModel {
 
                         }
                     });
-//        }
         return favoriteMutableLiveData;
     }
 }
