@@ -53,6 +53,10 @@ public class NearbyItemObject {
         return isFavorite;
     }
 
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     public String getVicinity() {
         return vicinity;
     }
@@ -60,4 +64,5 @@ public class NearbyItemObject {
     public String getPlaceId() {
         return placeId;
     }
+
 }

@@ -49,8 +49,7 @@ public class MapsActivity extends BaseActivity implements
 
         nearbyViewmodel = ViewModelProviders.of(this).get(NearbyViewmodel.class);
         binding.setIsEnableSnippet(false);
-        binding.setView(MapsActivity.this);
-
+        binding.setView(this);
     }
 
     @Override
